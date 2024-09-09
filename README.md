@@ -4,6 +4,8 @@ https://www.django-rest-framework.org/api-guide/views/
 
 https://github.com/saintqqe/roflan
 
+https://www.youtube.com/watch?v=EsBqIZmR2Uc&list=PL-2EBeDYMIbQXKsyNweppuFptuogJe2L-
+
 ---
 
 ```python
