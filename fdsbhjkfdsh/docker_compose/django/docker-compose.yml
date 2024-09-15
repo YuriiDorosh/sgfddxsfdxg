@@ -1,0 +1,118 @@
+version: '3.8'
+
+services:
+  django:
+    build: .
+    container_name: django
+    volumes:
+      - ../manage.py:/app/manage.py
+      - ../src:/app/src
+    env_file:
+      - ../../.env
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - backend
+    environment:
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      DJANGO_DEBUG: ${DJANGO_DEBUG}
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+
+  celery_worker_1:
+    build: .
+    container_name: celery_worker_1
+    command: celery -A config worker -l info
+    volumes:
+      - ../manage.py:/app/manage.py
+      - ../src:/app/src
+    env_file:
+      - ../../.env
+    depends_on:
+      - redis
+    networks:
+      - backend
+    environment:
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      CELERY_BROKER_URL: ${CELERY_BROKER_URL}
+      CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND}
+
+  celery_worker_2:
+    build: .
+    container_name: celery_worker_2
+    command: celery -A config worker -l info --concurrency=2
+    volumes:
+      - ../manage.py:/app/manage.py
+      - ../src:/app/src
+    env_file:
+      - ../../.env
+    depends_on:
+      - redis
+    networks:
+      - backend
+    environment:
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      CELERY_BROKER_URL: ${CELERY_BROKER_URL}
+      CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND}
+
+  celery_beat:
+    build: .
+    container_name: celery_beat
+    command: celery -A config beat -l info
+    volumes:
+      - ../manage.py:/app/manage.py
+      - ../src:/app/src
+    env_file:
+      - ../../.env
+    depends_on:
+      - redis
+    networks:
+      - backend
+
+  flower:
+    image: mher/flower
+    container_name: flower
+    command: >
+      celery -A config flower
+      --port=5555
+      --broker=${CELERY_BROKER_URL}
+    ports:
+      - "5555:5555"
+    depends_on:
+      - celery_worker_1
+      - celery_worker_2
+    env_file:
+      - ../../.env
+    networks:
+      - backend
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    hostname: redis
+    networks:
+    - backend
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ../nginx/default.conf:/etc/nginx/conf.d/default.conf
+    env_file:
+      - ../../.env
+    depends_on:
+      - django
+    networks:
+      - backend
+
+networks:
+  backend:
+    external: true
