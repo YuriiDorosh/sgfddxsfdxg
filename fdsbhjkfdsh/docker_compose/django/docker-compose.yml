@@ -86,8 +86,10 @@ services:
     networks:
       - backend
 
-  flower:
-    image: mher/flower
+  flower: # TODO: started with sh file(8000 port)
+    build: 
+      context: ../..
+      dockerfile: docker_compose/django/Dockerfile
     container_name: flower
     restart: unless-stopped
     command: >
