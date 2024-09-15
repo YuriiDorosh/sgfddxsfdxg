@@ -6,13 +6,20 @@ DB_CONTAINER = postgres
 DC = docker compose
 MANAGE_PY = python manage.py
 
-.PHONY: up-all up-django up-django-db up-django-db-pgadmin-adminer up-pgadmin up-db up-adminer down-all down-django down-django-db down-pgadmin down-db down-adminer migrations superuser test collectstatic
+.PHONY: up-all up-all-2 up-django up-django-db up-django-db-pgadmin-adminer up-pgadmin up-db up-adminer down-all down-all-2 down-django down-django-db down-pgadmin down-db down-adminer migrations superuser test collectstatic
 
 up-all:
 	$(DC) -f docker_compose/db/docker-compose.yml $(ENV) up -d
 	$(DC) -f docker_compose/django/docker-compose.yml $(ENV) up -d
 	$(DC) -f docker_compose/pgadmin/docker-compose.yml $(ENV) up -d
 	$(DC) -f docker_compose/adminer/docker-compose.yml $(ENV) up -d
+
+up-all-2:
+	$(DC) -f docker_compose/db/docker-compose.yml \
+	      -f docker_compose/django/docker-compose.yml \
+	      -f docker_compose/pgadmin/docker-compose.yml \
+	      -f docker_compose/adminer/docker-compose.yml \
+	      $(ENV) up -d
 
 up-django:
 	$(DC) -f docker_compose/django/docker-compose.yml $(ENV) up -d
@@ -41,6 +48,13 @@ down-all:
 	$(DC) -f docker_compose/django/docker-compose.yml down
 	$(DC) -f docker_compose/pgadmin/docker-compose.yml down
 	$(DC) -f docker_compose/adminer/docker-compose.yml down
+
+down-all-2:
+	$(DC) -f docker_compose/db/docker-compose.yml \
+	      -f docker_compose/django/docker-compose.yml \
+	      -f docker_compose/pgadmin/docker-compose.yml \
+	      -f docker_compose/adminer/docker-compose.yml \
+	      down
 
 down-django:
 	$(DC) -f docker_compose/django/docker-compose.yml down

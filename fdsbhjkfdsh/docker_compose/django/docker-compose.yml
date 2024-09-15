@@ -2,16 +2,21 @@ version: '3.8'
 
 services:
   django:
-    build: .
+    # build: .
+    build:
+      # context: ../../
+      context: ../..
+      dockerfile: docker_compose/django/Dockerfile
     container_name: django
     volumes:
-      - ../manage.py:/app/manage.py
-      - ../src:/app/src
+      # - ../manage.py:/app/manage.py
+      # - ../src:/app/src
+      - ../../src:/app/src 
+      - ../../.env:/app/.env
     env_file:
       - ../../.env
     depends_on:
       - redis
-      - postgres
     networks:
       - backend
     environment:
