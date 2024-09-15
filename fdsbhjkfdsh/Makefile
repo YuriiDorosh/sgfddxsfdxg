@@ -2,13 +2,29 @@ ENV = --env-file .env
 LOGS = docker logs
 EXEC = docker exec -it
 APP_CONTAINER = django
+WORKER_1_CONTAINER = celery_worker_1
+WORKER_2_CONTAINER = celery_worker_2
+WORKER_BEAT_CONTAINER = celery_beat
+REDIS_CONTAINER = redis
+NGINX_CONTAINER = nginx
 DB_CONTAINER = postgres
 DC = docker compose
 MANAGE_PY = python manage.py
+NETWORK_NAME = backend
 
-.PHONY: up-all up-all-2 up-django up-django-db up-django-db-pgadmin-adminer up-pgadmin up-db up-adminer down-all down-all-2 down-django down-django-db down-pgadmin down-db down-adminer migrations superuser test collectstatic
 
-up-all:
+.PHONY: check-network up-all up-all-2 up-django up-django-db up-django-db-pgadmin-adminer up-pgadmin up-db up-adminer down-all down-all-2 down-django down-django-db down-pgadmin down-db down-adminer migrations superuser test collectstatic
+
+check-network:
+	@echo "Checking for network $(NETWORK_NAME)..."
+	@if ! docker network ls | grep -q $(NETWORK_NAME); then \
+		echo "Network $(NETWORK_NAME) does not exist. Creating..."; \
+		docker network create $(NETWORK_NAME); \
+	else \
+		echo "Network $(NETWORK_NAME) already exists."; \
+	fi
+
+up-all: check-network
 	$(DC) -f docker_compose/db/docker-compose.yml $(ENV) up -d
 	$(DC) -f docker_compose/django/docker-compose.yml $(ENV) up -d
 	$(DC) -f docker_compose/pgadmin/docker-compose.yml $(ENV) up -d
