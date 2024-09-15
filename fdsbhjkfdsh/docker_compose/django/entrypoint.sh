@@ -24,4 +24,4 @@
 
 # wait_for_port
 
-python manage.py runserver 0.0.0.0:8000
+python ./src/manage.py runserver 0.0.0.0:8000
