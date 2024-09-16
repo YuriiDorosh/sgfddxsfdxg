@@ -2,4 +2,4 @@
 
 cd /src
 
-celery -A config worker -l info --concurrency=2
+celery -A src.celery_app.app worker -l info --concurrency=2

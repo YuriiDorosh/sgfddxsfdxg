@@ -2,4 +2,4 @@
 
 cd /src
 
-celery -A config worker -l info
+celery -A src.celery_app.app worker -l info

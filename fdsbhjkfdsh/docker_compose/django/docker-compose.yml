@@ -48,10 +48,9 @@ services:
   celery_worker_2:
     build:
       context: ../.. 
-      dockerfile: docker_compose/django/Dockerfile
+      dockerfile: docker_compose/worker_2/Dockerfile
     container_name: celery_worker_2
     restart: unless-stopped
-    command: celery -A config worker -l info --concurrency=2
     volumes:
       - ../../src:/app/src 
       - ../../.env:/app/.env
@@ -71,10 +70,9 @@ services:
   celery_beat:
     build:
       context: ../.. 
-      dockerfile: docker_compose/django/Dockerfile
+      dockerfile: docker_compose/beat/Dockerfile
     container_name: celery_beat
     restart: unless-stopped
-    command: celery -A config beat -l info
     volumes:
       - ../../src:/app/src 
       - ../../.env:/app/.env

@@ -1,5 +1,3 @@
 #!/bin/bash
 
-cd /src
-
-celery -A config beat -l info
+celery -A src.celery_app.app beat -l info
