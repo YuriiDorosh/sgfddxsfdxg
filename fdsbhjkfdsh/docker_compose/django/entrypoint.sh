@@ -24,4 +24,6 @@
 
 # wait_for_port
 
+export PYTHONPATH=/app/src:$PYTHONPATH
+
 python ./src/manage.py runserver 0.0.0.0:8000

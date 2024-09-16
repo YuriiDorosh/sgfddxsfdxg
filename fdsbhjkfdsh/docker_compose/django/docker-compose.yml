@@ -26,10 +26,9 @@ services:
   celery_worker_1:
     build:
       context: ../.. 
-      dockerfile: docker_compose/django/Dockerfile
+      dockerfile: docker_compose/worker_1/Dockerfile
     container_name: celery_worker_1
     restart: unless-stopped
-    command: celery -A config worker -l info
     volumes:
       - ../../src:/app/src 
       - ../../.env:/app/.env
@@ -86,28 +85,28 @@ services:
     networks:
       - backend
 
-  flower: # TODO: started with sh file(8000 port)
+  flower:
     build: 
       context: ../..
-      dockerfile: docker_compose/django/Dockerfile
+      dockerfile: docker_compose/flower/Dockerfile
     container_name: flower
     restart: unless-stopped
-    command: >
-      celery -A config flower
-      --port=5555
-      --broker=${CELERY_BROKER_URL}
     volumes:
       - ../../src:/app/src 
       - ../../.env:/app/.env
     ports:
       - "5555:5555"
     depends_on:
+      - django
+      - redis
       - celery_worker_1
       - celery_worker_2
     env_file:
       - ../../.env
     networks:
       - backend
+    environment:
+      CELERY_BROKER_URL: ${CELERY_BROKER_URL}
 
   redis:
     image: redis:latest
