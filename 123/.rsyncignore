@@ -1,0 +1,40 @@
+# Ігноруємо .git папку
+.git/
+
+# Ігноруємо файли Django статики та медіа
+static/  # Django static files
+media/   # Django media files
+backend/static/  # Django static files
+backend/media/   # Django media files
+
+# Ігноруємо логи
+*.log
+logs/
+backend/logs/
+frontend/logs/
+
+# Ігноруємо файли з React білда
+node_modules/
+build/
+frontend/node_modules/
+frontend/build/
+
+# Ігноруємо файли конфігурацій та системні файли
+.env
+*.env
+docker-compose.override.yml
+.DS_Store  # MacOS
+*.swp      # Vim swap files
+.idea/     # JetBrains IDE config files
+.vscode/   # VSCode config files
+
+# Ігноруємо тимчасові файли та кеші
+__pycache__/
+*.pyc
+*.pyo
+tmp/
+temp/
+frontend/tmp/
+frontend/temp/
+backend/tmp/
+backend/temp/
