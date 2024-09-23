@@ -9,6 +9,25 @@ https://www.youtube.com/watch?v=EsBqIZmR2Uc&list=PL-2EBeDYMIbQXKsyNweppuFptuogJe
 ---
 
 ```python
+from django.conf import settings
+from django.conf.urls.static import static
+
+urlpatterns = [
+    # Ваші інші маршрути
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+```
+
+```python
+from django.shortcuts import render
+from .models import Profile
+
+def profile_view(request, pk):
+    profile = Profile.objects.get(pk=pk)
+    avatar_url = request.build_absolute_uri(profile.avatar.url)
+    return render(request, 'profile.html', {'profile': profile, 'avatar_url': avatar_url})
+```
+
+```python
 from django.db import connect, reset_queries
 
 import time
