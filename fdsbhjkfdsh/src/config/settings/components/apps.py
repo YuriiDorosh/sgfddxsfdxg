@@ -1,7 +1,7 @@
 import os
 import sys
 
-from src.config.settings.components.boilerplate import BASE_DIR
+from config.settings.components.boilerplate import BASE_DIR
 
 
 DJANGO_APPS = [
@@ -21,6 +21,7 @@ sys.path.insert(0, os.path.join(BASE_DIR, "apps"))
 
 
 LOCAL_APPS = [
+    'src.apps.test.apps.TestConfig',
     # 'src.apps.products.apps.ProductsConfig',
     # 'src.apps.customers.apps.CustomersConfig',
     # 'src.apps.sellers.apps.SellersConfig',
