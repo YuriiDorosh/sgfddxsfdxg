@@ -5,6 +5,8 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db import transaction
 from django.db.models import ForeignKey, BooleanField
 from django.http import HttpResponse
+from myapp.schemas import ApiResponse 
+
 
 
 def import_from_excel(model, excel_file, exclude_fields=None):
@@ -37,7 +39,7 @@ def import_from_excel(model, excel_file, exclude_fields=None):
                 errors.append(f"Заголовок '{header}' не відповідає жодному полю моделі.")
 
     if errors:
-        return {"status": "error", "errors": errors}
+        return ApiResponse(data={}, errors=errors)
 
     for row_idx, row in enumerate(ws.iter_rows(min_row=2), start=2):
         data = {}
@@ -98,7 +100,7 @@ def import_from_excel(model, excel_file, exclude_fields=None):
             errors.append(f"Рядок {row_idx}: {ve.messages}")
 
     if errors:
-        return {"status": "error", "errors": errors}
+        return ApiResponse(data={}, errors=errors)
 
     # Зберігаємо дані в базу в межах транзакції
     with transaction.atomic():
@@ -108,7 +110,11 @@ def import_from_excel(model, excel_file, exclude_fields=None):
             for obj in objects_to_update:
                 obj.save()
 
-    return {"status": "success", "message": "Дані успішно імпортовано!"}
+    return ApiResponse(
+        data={"created": len(objects_to_create), "updated": len(objects_to_update)},
+        meta={"message": "Дані успішно імпортовано!"},
+        errors=[]
+    )
 
 
 
