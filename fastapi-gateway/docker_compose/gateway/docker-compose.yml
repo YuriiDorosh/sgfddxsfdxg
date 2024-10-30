@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  fastapi-gateway:
+    build: 
+      context: ../..
+      dockerfile: docker_compose/gateway/Dockerfile
+    restart: unless-stopped
+    container_name: fastapi-gateway
+    networks:
+      - gateway-network
+
+networks:
+  gateway-network:
+    external: true

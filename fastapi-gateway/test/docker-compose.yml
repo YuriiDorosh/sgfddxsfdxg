@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  test-client:
+    build: .
+    container_name: test-client
+    networks:
+      - test-network
+      - gateway-network  # Підключення до обох мереж
+
+networks:
+  test-network:
+    external: true
+  gateway-network:
+    external: true
