@@ -2,6 +2,8 @@ https://pika.readthedocs.io/en/stable/
 
 https://chatgpt.com/share/6727e018-2e1c-8011-bada-d21c47a856fe
 
+https://chatgpt.com/share/6728454e-2600-8011-9c3d-47e8b31ddd67
+
 ```python
 import pika
 
